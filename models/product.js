@@ -6,14 +6,14 @@ const productSchema = mongoose.Schema({
 		required : true,
 		unique : true
 	},
-	name : {
+	productName : {
 		type : String,
 		required : true
 	},
 	altNames : [
 		{type : String}
 	],
-	description : {
+	productDescription : {
 		type : String,
 		required : true
 	},

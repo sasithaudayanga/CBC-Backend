@@ -20,7 +20,7 @@ export async function getProducts(req,res){
     }
 }
 
-export function saveProduct(req, res){
+export async function saveProduct(req, res){
 
     if(!isAdmin(req)){
         res.status(403).json({
@@ -33,19 +33,33 @@ export function saveProduct(req, res){
         req.body
     );
 
-    product
-        .save()
-        .then(() => {
-            res.json({
-                message: "Product added successfully",
-            });
+    // product.save()
+    //     .then(() => {
+    //         res.json({
+    //             message: "Product added successfully",
+    //         });
+    //     })
+    //     .catch(() => {
+    //         res.json({
+    //             message: "Failed to add product",
+    //         });
+    //     }
+    // );
+
+    try{
+        await product.save()
+        res.status(200).json({
+            message: "Product saved successfully"
         })
-        .catch(() => {
-            res.json({
-                message: "Failed to add product",
-            });
-        }
-    );
+
+    }catch(err){
+        res.status(500).json({
+            message: "Failed to save product",
+            error:err
+        })
+    }
+    
+    
 }
 
 export async function deleteProduct(req,res){
