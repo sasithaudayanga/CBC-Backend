@@ -23,7 +23,7 @@ export async function createOrder(req, res) {
     const lastOrder = await Order.find().sort({ date: -1 }).limit(1)
 
     if (lastOrder.length > 0) {
-
+    
         const lastOrderId = lastOrder[0].orderId                     //"CBC00551"
         const lastOrderNumberString = lastOrderId.replace("CBC", "") //"00551"
         const lastOrderNumber = parseInt(lastOrderNumberString)     //551
