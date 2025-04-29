@@ -1,10 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import productRouter from './routes/productRoute.js';
-import userRouter from './routes/userRoute.js';
 import jwt from 'jsonwebtoken';
-import orderRouter from './routes/orderRoute.js';
+import userRouter from './routes/userRoute.js';
+
+
 const app = express();
 
 app.use(bodyParser.json())
@@ -15,7 +15,7 @@ app.use(
         if (tokenString != null) {
             const token = tokenString.replace("Bearer ", "")
 
-            jwt.verify(token, "cbc-batch-five#@2025",
+            jwt.verify(token, "emsppsc2025",
                 (err, decoded) => {
                     if (decoded != null) {
                         req.user = decoded
@@ -35,7 +35,9 @@ app.use(
     }
 )
 
-mongoose.connect("mongodb+srv://admin:admin123@cluster2.0wlbw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster2")
+app.use("/users",userRouter)
+
+mongoose.connect("mongodb+srv://admin:ppscsgadmin9@ems-ppsc-sg.eztx0qb.mongodb.net/?retryWrites=true&w=majority&appName=EMS-PPSC-SG")
     .then(() => {
         console.log("Connected to the database")
     }).catch(() => {
@@ -45,9 +47,7 @@ mongoose.connect("mongodb+srv://admin:admin123@cluster2.0wlbw.mongodb.net/?retry
 
 
 
-app.use("/products", productRouter)
-app.use("/users", userRouter)
-app.use("/orders",orderRouter)
+
 
 
 app.listen(3000,
