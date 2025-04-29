@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
     role : {
         type : String,
         required : true,
-        default : "applicant"
+        default : "customer"
     },
     isBlocked : {
         type : Boolean,
@@ -36,6 +36,6 @@ const userSchema = mongoose.Schema({
 
 });
 
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model("userlistsProduct", userSchema);
 
 export default User;

@@ -67,7 +67,7 @@ export function loginUser(req,res){
                             role : user.role,
                             img : user.img
                         },
-                        "emsppsc2025"
+                        "cbc-batch-five#@2025"
                     )
 
 
@@ -89,7 +89,11 @@ export function loginUser(req,res){
 }
 
 export function isAdmin(req){
-    if(req.user == null){return false}
-    if(req.user.role != "admin"){return false}
+    if(req.user == null){
+        return false
+    }
+    if(req.user.role != "admin"){
+        return false
+    }
     return true
 }
