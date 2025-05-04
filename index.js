@@ -6,6 +6,9 @@ import userRouter from './routes/userRoute.js';
 import jwt from 'jsonwebtoken';
 import orderRouter from './routes/orderRoute.js';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
@@ -38,7 +41,7 @@ app.use(
     }
 )
 
-mongoose.connect("mongodb+srv://admin:admin123@cluster2.0wlbw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster2")
+mongoose.connect(process.env.MONGODB_URL)
     .then(() => {
         console.log("Connected to the database")
     }).catch(() => {
@@ -48,9 +51,9 @@ mongoose.connect("mongodb+srv://admin:admin123@cluster2.0wlbw.mongodb.net/?retry
 
 
 
-app.use("/products", productRouter)
-app.use("/users", userRouter)
-app.use("/orders",orderRouter)
+app.use("/api/products", productRouter)
+app.use("/api/users", userRouter)
+app.use("/api/orders",orderRouter)
 
 
 app.listen(3000,
