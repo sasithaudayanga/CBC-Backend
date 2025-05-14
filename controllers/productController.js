@@ -33,19 +33,6 @@ export async function saveProduct(req, res){
         req.body
     );
 
-    // product.save()
-    //     .then(() => {
-    //         res.json({
-    //             message: "Product added successfully",
-    //         });
-    //     })
-    //     .catch(() => {
-    //         res.json({
-    //             message: "Failed to add product",
-    //         });
-    //     }
-    // );
-
     try{
         await product.save()
         res.status(200).json({
@@ -53,6 +40,7 @@ export async function saveProduct(req, res){
         })
 
     }catch(err){
+        
         res.status(500).json({
             message: "Failed to save product",
             error:err
