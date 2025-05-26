@@ -93,6 +93,104 @@ export function loginUser(req,res){
     
 }
 
+
+
+export async function getUsers(req, res) {
+    try{
+        if(isAdmin(req)){
+            const users = await User.find()
+            res.json(users)
+            
+        }else{
+          res.status(400).json("Please Login First")
+            return
+            
+        }
+        
+    }catch(err){
+        res.json({
+            message: "Internal error",
+            error: err
+        })
+    }
+}
+
+
+
+export async function updateUser(req, res) {
+    if (!isAdmin(req)) {
+        return res.status(403).json({
+            message: "You are not authorized to update users"
+        });
+    }
+
+    const userId = req.params.id;
+
+    try {
+        const updatedFields = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            role: req.body.role,
+            status:req.body.isBlocked
+        };
+
+        
+        if (req.body.password) {
+            updatedFields.password = bcrypt.hashSync(req.body.password, 10);
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({
+            message: "User updated successfully",
+            user: updatedUser,
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: "Failed to update user",
+            error: err.message,
+        });
+    }
+}
+
+
+export async function deleteUser(req, res) {
+    if (!isAdmin(req)) {
+        return res.status(403).json({
+            message: "You are not authorized to delete users"
+        });
+    }
+
+    const userId = req.params.id;
+
+    try {
+        const deletedUser = await User.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({
+            message: "User deleted successfully",
+            user: deletedUser,
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: "Failed to delete user",
+            error: err.message,
+        });
+    }
+}
+
+
 export function isAdmin(req){
     if(req.user == null){
         return false
