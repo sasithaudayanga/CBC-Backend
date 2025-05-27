@@ -9,9 +9,10 @@ const reviewSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    user: {
+    userName: {
         type:String,
         required: false, 
+        default:"customer",
     },
     rating: {
         type: Number,

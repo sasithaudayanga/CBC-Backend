@@ -7,7 +7,7 @@ const reviewRouter=express.Router();
 reviewRouter.post("/",addReview);
 reviewRouter.get("/",getAllReview);
 reviewRouter.get("/:productId",getReviewById);
-reviewRouter.delete("/:productId",deleteReview);
+reviewRouter.delete("/:id",deleteReview);
 
 
 export default reviewRouter;

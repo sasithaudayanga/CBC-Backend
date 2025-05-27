@@ -71,7 +71,7 @@ export async function deleteReview(req,res){
         return
     }
     try{
-        await Reviews.deleteOne({productId : req.params.productId})
+        await Reviews.deleteOne({_id : req.params.id})
 
         res.json({
             message : "Review deleted successfully"
