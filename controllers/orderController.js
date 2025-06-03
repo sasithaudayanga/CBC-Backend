@@ -1,5 +1,6 @@
 import Order from "../models/order.js"
 import Product from "../models/product.js"
+import { isAdmin } from "./userController.js"
 
 
 
@@ -72,9 +73,9 @@ export async function createOrder(req, res) {
 
             }
 
-            //total=total+(item.price*orderInfo.products[i].qty)
+            
             total+=(item.price*orderInfo.products[i].qty)
-            //labelledTotal=labelledTotal+(item.labelledPrice*orderInfo.products[i].qty)
+           
             labelledTotal+=(item.labelledPrice*orderInfo.products[i].qty)
 
         }
@@ -93,17 +94,45 @@ export async function createOrder(req, res) {
 
         const createdOrder = await order.save()
         res.status(200).json({
-            message: "Order created successfully",
+            message: "Order placed successfully",
             orderDetail: createdOrder
 
         })
     } catch (err) {
+        
         res.status(500).json({
-            message: "Failed to create order",
+            message: "Failed to place order",
             error: err
         })
     }
     //stock check
     //create order object
+
+}
+
+export async function getOrder(req,res){
+    if (req.user == null) {
+        res.status(403).json({
+            message: "Please login first & try again"
+        })
+        return
+    }
+    try{
+     if(isAdmin){
+        const order= await Order.find();
+        res.status(200).json(order);        
+     }else{
+        const order= await Order.find({email:req.user.email});
+        res.status(200).json(order);
+     }
+
+     }catch(err){
+            res.status(500).json({
+            message: "Faild to review order",
+            error:err
+        })
+        return
+     }
+
 
 }
