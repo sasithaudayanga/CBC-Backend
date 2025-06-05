@@ -45,8 +45,9 @@ app.use(
 mongoose.connect(process.env.MONGODB_URL)
     .then(() => {
         console.log("Connected to the database")
-    }).catch(() => {
+    }).catch((err) => {
         console.log("Database connection failed")
+        console.log(err)
     })
 
 
