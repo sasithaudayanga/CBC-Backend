@@ -1,6 +1,8 @@
 import Order from "../models/order.js"
 import Product from "../models/product.js"
+import User from "../models/user.js";
 import { isAdmin } from "./userController.js"
+
 
 
 
@@ -44,39 +46,39 @@ export async function createOrder(req, res) {
         for (let i = 0; i < orderInfo.products.length; i++) {
             const item = await Product.findOne({ productId: orderInfo.products[i].productId })
 
-            if(item==null){
+            if (item == null) {
                 res.status(404).json({
-                    message:"Product with productId "+orderInfo.products[i].productId+" not found"
+                    message: "Product with productId " + orderInfo.products[i].productId + " not found"
                 })
                 return
             }
 
-            if(item.isAvailable==false){
+            if (item.isAvailable == false) {
                 res.status(404).json({
-                    message:"Product with productId "+orderInfo.products[i].productId+" not available right now"
+                    message: "Product with productId " + orderInfo.products[i].productId + " not available right now"
                 })
-                return 
+                return
             }
 
-            products[i]={
-                productInfo:{
-                    productId:item.productId,
-                    name:item.productName,
-                    altNames:item.altNames,
-                    description:item.productDescription, 
-                    images:item.images, 
-                    labelledPrice:item.labelledPrice,
-                    price:item.price
+            products[i] = {
+                productInfo: {
+                    productId: item.productId,
+                    name: item.productName,
+                    altNames: item.altNames,
+                    description: item.productDescription,
+                    images: item.images,
+                    labelledPrice: item.labelledPrice,
+                    price: item.price
                 },
 
-                qty:orderInfo.products[i].qty
+                qty: orderInfo.products[i].qty
 
             }
 
-            
-            total+=(item.price*orderInfo.products[i].qty)
-           
-            labelledTotal+=(item.labelledPrice*orderInfo.products[i].qty)
+
+            total += (item.price * orderInfo.products[i].qty)
+
+            labelledTotal += (item.labelledPrice * orderInfo.products[i].qty)
 
         }
 
@@ -88,8 +90,8 @@ export async function createOrder(req, res) {
             total: 0,
             phone: orderInfo.phone,
             products: products,
-            labelledTotal:labelledTotal,
-            total:total
+            labelledTotal: labelledTotal,
+            total: total
         })
 
         const createdOrder = await order.save()
@@ -99,40 +101,63 @@ export async function createOrder(req, res) {
 
         })
     } catch (err) {
-        
+
         res.status(500).json({
             message: "Failed to place order",
             error: err
         })
     }
-    //stock check
-    //create order object
 
 }
 
-export async function getOrder(req,res){
+export async function getOrder(req, res) {
     if (req.user == null) {
         res.status(403).json({
             message: "Please login first & try again"
         })
         return
     }
-    try{
-     if(isAdmin){
-        const order= await Order.find();
-        res.status(200).json(order);        
-     }else{
-        const order= await Order.find({email:req.user.email});
-        res.status(200).json(order);
-     }
+    try {
+        if (isAdmin) {
+            const order = await Order.find();
+            res.status(200).json(order);
+        } else {
+            const order = await Order.find({ email: req.user.email });
+            res.status(200).json(order);
+        }
 
-     }catch(err){
-            res.status(500).json({
+    } catch (err) {
+        res.status(500).json({
             message: "Faild to review order",
-            error:err
+            error: err
         })
         return
-     }
+    }
 
 
+}
+
+export async function updateOrder(req, res) {
+    if (!isAdmin(req)) {
+        res.status(403).json({
+            message: "You are not authorized to update a product"
+        })
+        return
+    }
+
+    const orderId = req.params.orderId;
+    const status = req.params.status;
+
+    try {
+
+        await Order.updateOne({ orderId: orderId }, { status: status });
+
+        res.status(200).json({message: "Order updated successfully"});
+
+    } catch (err) {
+        res.status(500).json({
+            message: "Failed to update order",
+            error: err,
+        });
+    }
 }
