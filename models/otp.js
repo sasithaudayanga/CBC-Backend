@@ -13,5 +13,5 @@ const otpSchema=mongoose.Schema({
     }
 })
 
-const OTP =mongoose.model("OTP",otpSchema);
+const OTP =mongoose.model("otplist",otpSchema);
 export default OTP;

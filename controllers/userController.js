@@ -211,7 +211,7 @@ export async function loginWithGoogle(req, res) {
         }
 
     });
-    console.log(response.data);
+   // console.log(response.data);
 
     const user = await User.findOne({ email: response.data.email });
     if (user == null) {
@@ -303,12 +303,23 @@ export async function sendOTP(req,res){
     });
 
 
-    const message={
-        from:process.env.EMAIL,
-        to:email,
-        sbject:"Password reset - CBC",
-        text:"Your password reset OTP : "+randomOTP
-
+    const message = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "🔐 CBC Password Reset - OTP Inside",
+      text: `Your password reset OTP is: ${randomOTP}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2 style="color: #10b981;">Password Reset Request</h2>
+          <p>Hello,</p>
+          <p>You recently requested to reset your password for your CBC account. Use the OTP below to proceed:</p>
+          <h3 style="font-size: 28px; color: #111; letter-spacing: 4px;">${randomOTP}</h3>
+          <p>This OTP is valid for a limited time and can be used only once.</p>
+          <p>If you did not request this, you can safely ignore this email.</p>
+          <br />
+          <p style="color: #888;">Thank you,<br/>CBC Team</p>
+        </div>
+      `,
     };
 
     const otp= new OTP({
@@ -326,12 +337,51 @@ export async function sendOTP(req,res){
             }else{
                 res.status(200).json({
                     message:"OTP sent successfully",
-                    otp:randomOTP
+                   // otp:randomOTP
                 })
             }
         }
     )
 
+}
+
+export async function resetPwd(req,res){
+    const otp=req.body.otp;
+    const email=req.body.email;
+    const newPassword=req.body.newPassword;
+    //console.log(req.body);
+
+    //find sent OTP
+    const checkOTP=await OTP.findOne({
+        email:email
+    });
+    
+    if(checkOTP==null){
+        res.status(404).json({
+            message:"Invalid OTP"
+        });
+        return;
+    };
+
+    if(otp==checkOTP.otp){
+        //delete all otp 
+        await OTP.deleteMany({
+            email:email
+        });
+
+        const newHashedPassword=bcrypt.hashSync(newPassword, 10);
+
+        const resetpass=await User.updateOne({email:email},{password:newHashedPassword});
+        res.status(200).json({
+            message:"Password has been reset successfully"
+        });
+                  
+    }else{
+        res.status(404).json({
+            message:"Invalid OTP"
+        });
+        return;
+    }
 }
 
 
