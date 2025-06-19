@@ -211,7 +211,7 @@ export async function loginWithGoogle(req, res) {
         }
 
     });
-   // console.log(response.data);
+console.log(response.data);
 
     const user = await User.findOne({ email: response.data.email });
     if (user == null) {
@@ -283,7 +283,7 @@ export async function sendOTP(req,res){
 
     if(email==null){
         res.status(400).json({
-            message:"Email is required"
+            message:"Please enter your Email"
         });
         return;
     }
@@ -381,6 +381,19 @@ export async function resetPwd(req,res){
             message:"Invalid OTP"
         });
         return;
+    }
+}
+
+export function getUserAdmin(req,res){
+    if(req.user==null){
+        res.status(403).json({
+            message:"You are not authorized "
+        });
+        return;
+    }else{
+        res.json({
+            ...req.user
+        })
     }
 }
 
