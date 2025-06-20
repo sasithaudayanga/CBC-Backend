@@ -14,7 +14,7 @@ export async function addReview(req, res) {
     }
 }
 
-// ✅ Get a review by ID
+// Get a review by ID
 
 export async function getReviewById(req,res){
     const productId=req.params.productId
@@ -41,7 +41,7 @@ export async function getReviewById(req,res){
 
 }
 
-// ✅ Get all reviews (Admin only)
+// Get all reviews (Admin only)
 export async function getAllReview(req,res){
 
     try{
@@ -61,7 +61,7 @@ export async function getAllReview(req,res){
 }
 
 
-// ✅ Delete a review by ID (Admin only)
+// Delete a review by ID (Admin only)
 export async function deleteReview(req,res){
     
     if(!isAdmin(req)){
