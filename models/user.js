@@ -33,6 +33,11 @@ const userSchema = mongoose.Schema({
         required : false,
         default : "https://avatar.iran.liara.run/public/boy?username=Ash"
     },
+    emailVerified:{
+        type:Boolean,
+        required:true,
+        default:false
+    }
 
 });
 
