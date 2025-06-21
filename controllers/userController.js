@@ -324,7 +324,7 @@ export async function loginWithGoogle(req, res) {
             }, process.env.JWT_KEY
         )
         res.json({
-            message: "login Sucessfll",
+            message: "Login successful",
             token: token,
             role: newUser.role
         })
