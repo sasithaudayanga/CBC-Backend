@@ -308,7 +308,7 @@ export async function loginWithGoogle(req, res) {
             lastName: response.data.family_name,
             img: response.data.picture,
             password: "google",
-            email_verified: response.data.email_verified
+            emailVerified: response.data.email_verified
 
 
         })
@@ -319,6 +319,7 @@ export async function loginWithGoogle(req, res) {
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
                 role: newUser.role,
+                emailVerified:newUser.emailVerified,
                 img: newUser.img
 
             }, process.env.JWT_KEY
